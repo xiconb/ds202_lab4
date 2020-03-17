@@ -77,3 +77,15 @@ bioClean = select(bioClean,-matches("Inches"))
 bioClean <- bioClean[,c(1,2,7,3,4,5,6)] 
 bioClean
 ```
+
+ ## Part two: Tidying (1)
+For the following questions, work on the cleaned data frames defClean, offClean, and bioClean.
+
+1. Reformat the defClean data frame into a tidy format using pivot_longer. The type of statistic (Tackles_Solo, Tackles_ASST, etc) is added as a new key column named Statistic.
+
+2. Create a histogram for each defensive statistic. Use facet_wrap to draw all histograms in a single plot. What defensive skills are rare?
+
+3.Did ISU have better defense against West Virginia or Kansas State? Answer this question by creating a scatterplot with x-axis being the number of solo tackles (by each player) against West Virginia, and y-axis being that against Kansas State. A large number of solo tackles indicates good defense.
+```{r}
+
+```

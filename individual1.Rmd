@@ -74,4 +74,5 @@ bioClean = select(bioClean,-matches("Feet"))
 bioClean = select(bioClean,-matches("Inches"))
 bioClean <- bioClean[,c(1,2,7,3,4,5,6)] 
 bioClean
+#TODO print the structure of each clean dataframe
 ```
