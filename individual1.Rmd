@@ -8,6 +8,70 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## Loading Data: Cyclone Football 
+```{r}
+library(readxl)
+Defense <- read_excel('cyclonesFootball2019.xlsx', sheet='Defensive')
+Offense <- read_excel('cyclonesFootball2019.xlsx', sheet='Offensive')
+Bio <- read_excel('cyclonesFootball2019.xlsx', sheet='Biography')
+str(defense)#checks if it worked 
 
-## R Markdown
+```
 
+
+
+## Part one: Cleaning data
+The three Excel sheets are loaded into R but they are not useful to us before some cleaning. Manipulate the three imported data frames, so that the cleaned data satisfy the following:
+
+1. The player names and opponent names are factors.
+2. All offensive and defensive statistics are numerical. The `Weight` column in Biography is also numeric. (Hint: look at `?mutate_at` if you want to save writing some code). 
+3.Change the 'Height' column in biography into numeric (Hint: Use a unit that works well)
+4. By cleaning the three data frames in R, at the end of this step you should have the following three clean data frames: `defClean`, `offClean`, and `bioClean`. Print the structures of these data frames. **Make sure your data types make sense for each variable.**
+```{r}
+#install and load needed packages
+if (!require("tidyverse")) {
+install.packages("tidyverse")
+}
+if (!require("dplyr")) {
+install.packages("dplyr")
+}
+
+library(dplyr)
+library(tidyverse)
+
+```
+
+
+```{r}
+#player names and opponent names are factors
+Bio$Name <- as.factor(Bio$Name)
+Defense$Name <- as.factor(Defense$Name)
+Offense$Name <- as.factor(Offense$Name)
+Defense$Opponent_Opponent <- as.factor(Defense$Opponent_Opponent)
+Offense$Opponent_Opponent <- as.factor(Offense$Opponent_Opponent)
+
+```
+
+
+```{r}
+
+#offensive and defensive statistics are numerical. 'Weight' column in biography is also numeric.
+Defense <- mutate_at(Defense, 3:11, as.numeric)
+Offense <- mutate_at(Offense, 3:12, as.numeric)
+bio$Weight <- as.numeric(Bio$Weight)
+defClean <- Defense
+offClean <- Offense
+```
+
+```{r}
+#Change Height column in biography into numeric
+#TODO my "%>%" wasnt recognized as a function for some reason
+bioClean <- Bio %>% separate(Height, c("Feet", "Inches"))
+bioClean$Feet = as.numeric(bioClean$Feet)
+bioClean$Inches = as.numeric(bioClean$Inches)
+bioClean$Height = (bioClean$Feet *12)+bioClean$Inches
+bioClean = select(bioClean,-matches("Feet"))
+bioClean = select(bioClean,-matches("Inches"))
+bioClean <- bioClean[,c(1,2,7,3,4,5,6)] 
+bioClean
+```
