@@ -67,11 +67,11 @@ Offense <- mutate_at(Offense, 3:12, as.numeric)
 Bio$Weight <- as.numeric(Bio$Weight)
 defClean <- Defense
 offClean <- Offense
+str(defClean)
 ```
 
 ```{r}
 #Change Height column in biography into numeric
-#TODO my "%>%" wasnt recognized as a function for some reason
 bioClean <- Bio %>% separate(Height, c("Feet", "Inches"))
 bioClean$Feet = as.numeric(bioClean$Feet)
 bioClean$Inches = as.numeric(bioClean$Inches)
@@ -151,8 +151,17 @@ bioClean %>%
 
 ## Part Three: Joining data frames
 1. Find where do the offensive players come from by joining the offensive data and player biography data appropriately.
-
+```{r}
+offClean = offClean %>%
+  left_join(bioClean, by=c("Name"))
+offCleanPlayers = offClean %>% group_by(Name) %>% select(State)
+head(offCleanPlayers)
+```
 2. Is there a relationship between the weight of a player and the receiving yards (Receiving_YDS)?
+```{r}
+ggplot(offClean, aes(Weight, Receiving_YDS)) + geom_point() + labs(title = "Weight of player and receiving yards", x = "Weight of a player", y = "Receiving yards") +geom_smooth()
+```
+Based on the scatterplot and the geom_smooth() line we see that there is a dip around 190lbs and starts to increase around 200lbs where it peaks around 225 lbs (although there are no points it predicts the outcome) and slowly descreases from there as the relationship between weight and recieving yards.  
 
 3. How do the performance of quarterback Brock Purdy relate to the performance of the ISU team?
 
