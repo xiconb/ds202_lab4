@@ -16,7 +16,7 @@ library(readxl)
 Defense <- read_excel('cyclonesFootball2019.xlsx', sheet='Defensive')
 Offense <- read_excel('cyclonesFootball2019.xlsx', sheet='Offensive')
 Bio <- read_excel('cyclonesFootball2019.xlsx', sheet='Biography')
-str(defense)#checks if it worked 
+str(Defense)#checks if it worked 
 
 ```
 
@@ -37,9 +37,13 @@ install.packages("tidyverse")
 if (!require("dplyr")) {
 install.packages("dplyr")
 }
+if (!require("ggplot2")) {
+install.packages("ggplot2")
+}
 
 library(dplyr)
 library(tidyverse)
+library(ggplot2)
 
 ```
 
@@ -60,7 +64,7 @@ Offense$Opponent_Opponent <- as.factor(Offense$Opponent_Opponent)
 #offensive and defensive statistics are numerical. 'Weight' column in biography is also numeric.
 Defense <- mutate_at(Defense, 3:11, as.numeric)
 Offense <- mutate_at(Offense, 3:12, as.numeric)
-bio$Weight <- as.numeric(Bio$Weight)
+Bio$Weight <- as.numeric(Bio$Weight)
 defClean <- Defense
 offClean <- Offense
 ```
@@ -75,7 +79,7 @@ bioClean$Height = (bioClean$Feet *12)+bioClean$Inches
 bioClean = select(bioClean,-matches("Feet"))
 bioClean = select(bioClean,-matches("Inches"))
 bioClean <- bioClean[,c(1,2,7,3,4,5,6)] 
-bioClean
+head(bioClean)
 ```
 
  ## Part two: Tidying (1)
@@ -87,5 +91,69 @@ For the following questions, work on the cleaned data frames defClean, offClean,
 
 3.Did ISU have better defense against West Virginia or Kansas State? Answer this question by creating a scatterplot with x-axis being the number of solo tackles (by each player) against West Virginia, and y-axis being that against Kansas State. A large number of solo tackles indicates good defense.
 ```{r}
+#Reformatting the defClean data frame into a tidy format also Changed Statistic to a factor for ease of use in the future
+defClean <- defClean %>% 
+  pivot_longer(cols = c("Tackles_Solo","Tackles_Sack","Tackles_ASST", "Tackles_TFL","Turnover_FF", "Turnover_FR","Turnover_INT", "Pass_QBH","Pass_PB" ),
+    names_to = "Statistic",
+    values_to = "Value") 
+defClean$Statistic <- as.factor(defClean$Statistic)
+
+str(defClean)
 
 ```
+
+```{r}
+#Creating a Histogram For each Defensice Statistic
+
+ggplot(defClean, aes(x=Value)) +
+  geom_histogram() +
+  facet_wrap(defClean$Statistic)
+```
+Looking at the histogram we see that almost all Stats have 0 as the majority howvever any Stat involing a turnover or sack is much more rare than other stats (IE the majority of players have 0 and almost no player has more than 1 in a game)
+
+```{r}
+#Did ISU have a better defense against West Virgina or Kanas State?
+dat1 <- defClean
+dat1 <- dat1 %>% 
+  filter(Opponent_Opponent == "West Virginia" | Opponent_Opponent == "Kansas State") %>%
+  filter(Statistic == "Tackles_Solo") %>%
+  pivot_wider(names_from = Opponent_Opponent, values_from = Value) %>%
+  mutate( WV = `West Virginia` ) %>%
+  mutate(KS = `Kansas State`)
+
+
+ggplot(dat1, aes(x=WV, y=KS)) + 
+  geom_point(position = "jitter")
+
+```
+
+As you can see from the plot ISU had a better defense against Kansas State than against West Virginia, as more players had more solo tackles
+
+## Part two: Tidying (2)
+1. Separate the Hometown column into two columns, namely the city and the state. Print the first few rows of these two columns. (Hint: look at the sep= argument of separate)
+
+2.How many players are there from each state?
+
+```{r}
+#Seperateing the Hometown Column into city and State
+bioClean <- bioClean %>%
+  separate(Hometown,into = c("City", "State"), sep= ',')
+head(bioClean)
+```
+
+```{r}
+#HOw many Players in each State
+dat2 <- bioClean
+bioClean %>% 
+  count(State, sort = TRUE)
+  
+```
+
+## Part Three: Joining data frames
+1. Find where do the offensive players come from by joining the offensive data and player biography data appropriately.
+
+2. Is there a relationship between the weight of a player and the receiving yards (Receiving_YDS)?
+
+3. How do the performance of quarterback Brock Purdy relate to the performance of the ISU team?
+
+4. Explore more. Raise a question that can be answered only by looking at two or more data frames. Then answer that question.
