@@ -1,70 +1,5 @@
----
-title: "team"
-author: "Brandon Xicon"
-date: "3/17/2020"
-output: html_document
----
-*Note that reading data and loading packages is hidden on the HTML for readabilty*
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-
-Loading Data: Cyclone Football 
-```{r include=FALSE}
-library(readxl)
-Defense <- read_excel('cyclonesFootball2019.xlsx', sheet='Defensive')
-Offense <- read_excel('cyclonesFootball2019.xlsx', sheet='Offensive')
-Bio <- read_excel('cyclonesFootball2019.xlsx', sheet='Biography')
- 
-```
-
-```{r include=FALSE}
-#install and load needed packages
-if (!require("tidyverse")) {
-install.packages("tidyverse")
-}
-if (!require("dplyr")) {
-install.packages("dplyr")
-}
-if (!require("ggplot2")) {
-install.packages("ggplot2")
-}
-
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-
-```
-
-
-
-## Part one: Cleaning data
-The three Excel sheets are loaded into R but they are not useful to us before some cleaning. Manipulate the three imported data frames, so that the cleaned data satisfy the following:
-
-1. The player names and opponent names are factors.
-2. All offensive and defensive statistics are numerical. The `Weight` column in Biography is also numeric. (Hint: look at `?mutate_at` if you want to save writing some code). 
-3.Change the 'Height' column in biography into numeric (Hint: Use a unit that works well)
-4. By cleaning the three data frames in R, at the end of this step you should have the following three clean data frames: `defClean`, `offClean`, and `bioClean`. Print the structures of these data frames. **Make sure your data types make sense for each variable.**
-```{r include=FALSE}
-#install and load needed packages
-if (!require("tidyverse")) {
-install.packages("tidyverse")
-}
-if (!require("dplyr")) {
-install.packages("dplyr")
-}
-if (!require("ggplot2")) {
-install.packages("ggplot2")
-}
-
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-
-```
-
-
+Necesarry cleaning I didnt do but need to do my parts
 ```{r}
 #player names and opponent names are factors
 Bio$Name <- as.factor(Bio$Name)
@@ -99,6 +34,10 @@ bioClean <- bioClean[,c(1,2,7,3,4,5,6)]
 head(bioClean)
 ```
 
+
+
+
+Part 2
  ## Part two: Tidying (1)
 For the following questions, work on the cleaned data frames defClean, offClean, and bioClean.
 
@@ -172,29 +111,10 @@ bioClean %>%
   
 ```
 
-## Part Three: Joining data frames
-1. Find where do the offensive players come from by joining the offensive data and player biography data appropriately.
-```{r}
-offJoined <- offClean %>%
-  left_join(bioClean, by=c("Name"))
 
-offCleanPlayers = offJoined %>%
-  group_by(Name) %>%
-  select(State)
 
-head(offCleanPlayers)
-```
-2. Is there a relationship between the weight of a player and the receiving yards (Receiving_YDS)?
-```{r}
-ggplot(offJoined, aes(Weight, Receiving_YDS)) +
-  geom_point() +
-  labs(title = "Weight of player and receiving yards",
-       x = "Weight of a player",
-       y = "Receiving yards") +
-  geom_smooth()
-```
-Based on the scatterplot and the geom_smooth() line we see that there is a dip around 190lbs and starts to increase around 200lbs where it peaks around 225 lbs (although there are no points it predicts the outcome) and slowly descreases from there as the relationship between weight and recieving yards.  
 
+Part 3 Stuff
 3. How does the performance of quarterback Brock Purdy relate to the performance of the ISU team?
 ```{r}
 offWithoutPurdy <- offClean %>%
