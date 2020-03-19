@@ -1,6 +1,6 @@
 ---
 title: "team"
-author: "Brandon Xicon"
+author: "Brandon Xicon:xiconb,Eric Gleiter:Eric-Gleiter"
 date: "3/17/2020"
 output: html_document
 ---
@@ -99,7 +99,7 @@ bioClean <- bioClean[,c(1,2,7,3,4,5,6)]
 head(bioClean)
 ```
 
- ## Part two: Tidying (1)
+## Part two: Tidying (1)
 For the following questions, work on the cleaned data frames defClean, offClean, and bioClean.
 
 1. Reformat the defClean data frame into a tidy format using pivot_longer. The type of statistic (Tackles_Solo, Tackles_ASST, etc) is added as a new key column named Statistic.
